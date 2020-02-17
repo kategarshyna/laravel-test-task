@@ -5,13 +5,14 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property string $name
- * @property string $email
+ * @property int $user_id
+ * @property string $title
+ * @property string $content
  *
- * @property Post[] $posts
+ * @property User $user
  * @property Comment[] $comments
  */
-class User extends Model
+class Post extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -19,13 +20,14 @@ class User extends Model
      * @var array
      */
     protected $fillable = [
-        'name',
-        'email',
+        'user_id',
+        'title',
+        'content',
     ];
 
-    public function posts()
+    public function user()
     {
-        return $this->hasMany(Post::class);
+        return $this->belongsTo(User::class);
     }
 
     public function comments()
@@ -37,9 +39,8 @@ class User extends Model
     {
         parent::boot();
 
-        static::deleting(function ($user) {
-            $user->comments()->delete();
-            $user->posts()->delete();
+        static::deleting(function ($post) {
+            $post->comments()->delete();
         });
     }
 }
